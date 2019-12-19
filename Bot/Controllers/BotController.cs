@@ -1,11 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace Bot.Controllers
 {
     [ApiController]
-    [Route("")]
     public class BotController : ControllerBase
     {
         private readonly ILogger<BotController> _logger;
@@ -15,10 +15,37 @@ namespace Bot.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
-        public async Task<Response> Get()
+        [HttpPost]
+        [Route("start")]
+        public async Task<IActionResult> Start(StartGame startGame)
         {
-            return new Response();
+            return Ok(startGame);
         }
+
+        [HttpGet]
+        [Route("move")]
+        public string Get()
+        {
+            return "CALL";
+        }
+
+        [HttpPost]
+        [Route("update")]
+        public async Task<IActionResult> Update()
+        {
+            return Ok();
+        }
+    }
+
+    public class StartGame
+    {
+        [JsonPropertyName("OPPONENT_NAME")]
+        public string OpponentName { get; set; }
+
+        [JsonPropertyName("STARTING_CHIP_COUNT")]
+        public int ChipCount { get; set; }
+
+        [JsonPropertyName("HAND_LIMIT")]
+        public int HandLimit { get; set; }
     }
 }
