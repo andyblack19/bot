@@ -56,6 +56,11 @@ namespace Bot
         {
             var ratio = BettingLimits.Ratio[_card];
 
+            if (_chipCount < _startingChips * 0.5 && _handLimit - _handNumber < 10)
+            {
+                ratio *= 2;
+            }
+
             if (ratio == 0.0)
             {
                 if (_opponentMove == null)
@@ -79,13 +84,19 @@ namespace Bot
                     Log.Information("Calling against HanYolo");
                     return "CALL";
                 }
-                Log.Information("Over what we want to bet, Opponent has bet, Folding");
+
+                if (_opponentMove == "BET")
+                {
+                    Log.Information($"They bet minimum above we're willing to bet: {_opponentMove}");
+                    return "CALL";
+                }
+                Log.Information($"They bet a lot more than our maximum: {_opponentMove}");
                 return "FOLD";
             }
 
             _totalBetThisHand += maxWillingToBet;
             _chipCount -= maxWillingToBet;
-            Log.Information($"Betting: {maxWillingToBet}");
+            Log.Information($"Betting: {maxWillingToBet} ({ratio * 100}%)");
             return $"BET:{maxWillingToBet}";
         }
 
