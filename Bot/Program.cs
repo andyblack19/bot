@@ -15,6 +15,7 @@ namespace Bot
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.UseUrls("http://169.254.135.227:4000");
                 });
     }
 }
