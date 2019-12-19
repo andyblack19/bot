@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace Bot.Controllers
@@ -15,7 +16,7 @@ namespace Bot.Controllers
         }
 
         [HttpGet]
-        public Response Get()
+        public async Task<Response> Get()
         {
             return new Response();
         }
