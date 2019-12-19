@@ -17,9 +17,10 @@ namespace Bot.Controllers
 
         [HttpPost]
         [Route("start")]
-        public async Task<IActionResult> Start(StartGame startGame)
+        [Consumes("application/x-www-form-urlencoded")]
+        public async Task<IActionResult> Start([FromForm] StartGame start)
         {
-            return Ok(startGame);
+            return Ok(start);
         }
 
         [HttpGet]
@@ -31,21 +32,23 @@ namespace Bot.Controllers
 
         [HttpPost]
         [Route("update")]
-        public async Task<IActionResult> Update()
+        [Consumes("application/x-www-form-urlencoded")]
+        public async Task<IActionResult> Update([FromForm] UpdateGame update)
         {
-            return Ok();
+            return Ok(update);
         }
     }
 
     public class StartGame
     {
-        [JsonPropertyName("OPPONENT_NAME")]
-        public string OpponentName { get; set; }
+        public string OPPONENT_NAME { get; set; }
+        public int STARTING_CHIP_COUNT { get; set; }
+        public int HAND_LIMIT { get; set; }
+    }
 
-        [JsonPropertyName("STARTING_CHIP_COUNT")]
-        public int ChipCount { get; set; }
-
-        [JsonPropertyName("HAND_LIMIT")]
-        public int HandLimit { get; set; }
+    public class UpdateGame
+    {
+        public string COMMAND { get; set; }
+        public string DATA { get; set; }
     }
 }
