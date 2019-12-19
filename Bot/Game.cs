@@ -79,6 +79,12 @@ namespace Bot
                     return "BET";
                 }
 
+                if (_opponentMove == "CALL")
+                {
+                    Log.Information($"Crap card {_card}, Opponent has Called, CALL");
+                    return "CALL";
+                }
+
                 Log.Information($"Crap card {_card}, Opponent has bet, Folding");
                 return "FOLD";
             }
