@@ -6,7 +6,8 @@ namespace Bot
     public class Game
     {
         private int _chipCount;
-        private int _remainingHands;
+        private readonly int _handLimit;
+        private int _handNumber;
         private readonly int _startingChips;
         private string _opponentName;
         private string _card;
@@ -14,14 +15,14 @@ namespace Bot
         private int _opponentChipCount;
         private int _totalBetThisHand;
 
-        public Game(int chipCount, int remainingHands, string opponentName)
+        public Game(int chipCount, int handLimit, string opponentName)
         {
             _chipCount = chipCount;
             _startingChips = chipCount;
             _opponentChipCount = chipCount;
-            _remainingHands = remainingHands;
+            _handLimit = handLimit;
             _opponentName = opponentName;
-            Log.Information($"New game started. ChipCount: {chipCount}, HandLimit: {remainingHands}, OpponentName: {opponentName}");
+            Log.Information($"New game started. ChipCount: {chipCount}, HandLimit: {handLimit}, OpponentName: {opponentName}");
         }
 
         public void ReceiveButton()
@@ -41,8 +42,8 @@ namespace Bot
         public void SetCard(string card)
         {
             _card = card;
-            _remainingHands -= 1;
-            Log.Information($"Received card: {card}");
+            _handNumber += 1;
+            Log.Information($"Hand number: {_handNumber}. Received card: {card}");
         }
 
         public void OpponentMove(string move)
@@ -73,6 +74,12 @@ namespace Bot
             var maxWillingToBet = (int)(ratio * _chipCount);
             if (_totalBetThisHand >= maxWillingToBet)
             {
+                if (_opponentName == "HanYolo")
+                {
+                    Log.Information("Calling against HanYolo");
+                    return "CALL";
+                }
+                Log.Information("Over what we want to bet, Opponent has bet, Folding");
                 return "FOLD";
             }
 
@@ -86,18 +93,22 @@ namespace Bot
         {
             var chipsWon = int.Parse(chips);
             _chipCount += chipsWon;
-            Log.Information($"Received chips: {chips}");
+            Log.Information($"Received chips: {chips}, Total: {_chipCount}");
             if (_chipCount == 0)
             {
-                Log.Information($"**GAME LOST** {_remainingHands}");
+                Log.Information($"**GAME LOST** {_handNumber}, Chips: {_chipCount}");
             }
             else if (_chipCount >= _startingChips * 2)
             {
-                Log.Information($"**GAME WON** {_remainingHands}");
+                Log.Information($"**GAME WON** {_handNumber}, Won all the chips {_chipCount}");
             }
-            else if (_remainingHands == 0 && _chipCount > _startingChips)
+            else if (_handNumber == _handLimit && _chipCount > _startingChips)
             {
-                Log.Information($"**GAME WON** {_remainingHands}");
+                Log.Information($"**GAME WON** {_handNumber}, Round limit reached. Chips: {_chipCount}");
+            }
+            else if (_handNumber == _handLimit && _chipCount < _startingChips)
+            {
+                Log.Information($"**GAME LOST** {_handNumber}, Round limit reached. Chips: {_chipCount}");
             }
 
             _totalBetThisHand = 0;
