@@ -21,7 +21,7 @@ namespace Bot.Controllers
         [Consumes("application/x-www-form-urlencoded")]
         public async Task<IActionResult> Start([FromForm] StartGame start)
         {
-            CurrentGame = new Game(start.STARTING_CHIP_COUNT, start.HAND_LIMIT);
+            CurrentGame = new Game(start.STARTING_CHIP_COUNT, start.HAND_LIMIT,start.OPPONENT_NAME);
 
             return Ok(start);
         }
