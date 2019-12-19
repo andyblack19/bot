@@ -54,11 +54,12 @@ namespace Bot
 
         public string Move()
         {
-            var aheadBy = (_chipCount - _startingChips);
-            if (aheadBy > ((_handLimit - _handNumber) / 2))
+            var aheadBy = _chipCount - _startingChips;
+            var handsRemaining = (_handLimit - _handNumber) / 2;
+            if (aheadBy > handsRemaining)
             {
-                Log.Information("Folding because we can hold out for a win");
-                return "FOLD";
+                Log.Information($"Folding to hold out for a win. Ahead by {aheadBy} Rounds remaining: {handsRemaining}");
+//                return "FOLD";
             }
 
             var ratio = BettingLimits.Ratio[_card];
