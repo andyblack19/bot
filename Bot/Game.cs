@@ -79,15 +79,15 @@ namespace Bot
             Log.Information($"Received chips: {chips}");
             if (_chipCount == 0)
             {
-                Log.Information("**GAME LOST**");
+                Log.Information($"**GAME LOST** {_remainingHands}");
             }
             else if (_chipCount >= _startingChips * 2)
             {
-                Log.Information("**GAME WON**");
+                Log.Information($"**GAME WON** {_remainingHands}");
             }
             else if (_remainingHands == 0 && _chipCount > _startingChips)
             {
-                Log.Information("**GAME WON**");
+                Log.Information($"**GAME WON** {_remainingHands}");
             }
         }
 
