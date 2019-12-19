@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -8,6 +7,8 @@ namespace Bot.Controllers
     [ApiController]
     public class BotController : ControllerBase
     {
+        private static Game CurrentGame;
+
         private readonly ILogger<BotController> _logger;
 
         public BotController(ILogger<BotController> logger)
@@ -20,6 +21,8 @@ namespace Bot.Controllers
         [Consumes("application/x-www-form-urlencoded")]
         public async Task<IActionResult> Start([FromForm] StartGame start)
         {
+            CurrentGame = new Game(start.STARTING_CHIP_COUNT, start.HAND_LIMIT);
+
             return Ok(start);
         }
 
@@ -27,7 +30,7 @@ namespace Bot.Controllers
         [Route("move")]
         public string Get()
         {
-            return "CALL";
+            return CurrentGame.Move();
         }
 
         [HttpPost]
