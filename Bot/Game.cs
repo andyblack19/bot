@@ -54,6 +54,13 @@ namespace Bot
 
         public string Move()
         {
+            var aheadBy = (_chipCount - _startingChips);
+            if (aheadBy > ((_handLimit - _handNumber) / 2))
+            {
+                Log.Information("Folding because we can hold out for a win");
+                return "FOLD";
+            }
+
             var ratio = BettingLimits.Ratio[_card];
 
             if (_chipCount < _startingChips * 0.5 && _handLimit - _handNumber < 10)
@@ -66,7 +73,6 @@ namespace Bot
                 if (_opponentMove == null)
                 {
                     Log.Information($"Crap card {_card}, Our go first, Bet minimum (2) to try and force them to fold");
-                    Log.Information("BET");
                     _totalBetThisHand += 2;
                     _chipCount -= 2;
                     return "BET";
