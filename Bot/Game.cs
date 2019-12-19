@@ -6,19 +6,21 @@ namespace Bot
     public class Game
     {
         private int _chipCount;
-        private readonly int _handLimit;
+        private int _remainingHands;
+        private readonly int _startingChips;
         private string _opponentName;
         private string _card;
         private string _opponentMove;
         private int _opponentChipCount;
 
-        public Game(int chipCount, int handLimit, string opponentName)
+        public Game(int chipCount, int remainingHands, string opponentName)
         {
             _chipCount = chipCount;
+            _startingChips = chipCount;
             _opponentChipCount = chipCount;
-            _handLimit = handLimit;
+            _remainingHands = remainingHands;
             _opponentName = opponentName;
-            Log.Information($"New game started. ChipCount: {chipCount}, HandLimit: {handLimit}, OpponentName: {opponentName}");
+            Log.Information($"New game started. ChipCount: {chipCount}, HandLimit: {remainingHands}, OpponentName: {opponentName}");
         }
 
         public void ReceiveButton()
@@ -37,6 +39,7 @@ namespace Bot
         public void SetCard(string card)
         {
             _card = card;
+            _remainingHands -= 1;
             Log.Information($"Received card: {card}");
         }
 
@@ -71,8 +74,21 @@ namespace Bot
 
         public void ReceiveChips(string chips)
         {
-            _chipCount += int.Parse(chips);
+            var chipsWon = int.Parse(chips);
+            _chipCount += chipsWon;
             Log.Information($"Received chips: {chips}");
+            if (_chipCount == 0)
+            {
+                Log.Information("**GAME LOST**");
+            }
+            else if (_chipCount >= _startingChips * 2)
+            {
+                Log.Information("**GAME WON**");
+            }
+            else if (_remainingHands == 0 && _chipCount > _startingChips)
+            {
+                Log.Information("**GAME WON**");
+            }
         }
 
         public void OpponentCard(string card)
