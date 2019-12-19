@@ -24,6 +24,8 @@ namespace Bot
             {"A", 1.0}
     };
 
+        private string _opponentMove;
+
         public Game(int chipCount, int handLimit)
         {
             _chipCount = chipCount;
@@ -32,11 +34,13 @@ namespace Bot
 
         public void ReceiveButton()
         {
+            _opponentMove = null;
         }
 
         public void PostBlind()
         {
             _chipCount -= 1;
+            _opponentMove = null;
         }
 
         public void SetCard(string card)
@@ -46,6 +50,7 @@ namespace Bot
 
         public void OpponentMove(string move)
         {
+            _opponentMove = move;
         }
 
         public string Move()
