@@ -7,37 +7,24 @@ namespace Bot
     {
         private int _chipCount;
         private readonly int _handLimit;
+        private string _opponentName;
         private string _card;
         private string _opponentMove;
-
-        private readonly Dictionary<string, double> _ratio = new Dictionary<string, double>
-        {
-            {"2", 0.0},
-            {"3", 0.0},
-            {"4", 0.0},
-            {"5", 0.0},
-            {"6", 0.0},
-            {"7", 0.05},
-            {"8", 0.07},
-            {"9", 0.08},
-            {"T", 0.1},
-            {"J", 0.3},
-            {"Q", 0.5},
-            {"K", 0.7},
-            {"A", 1.0}
-        };
+        private int _opponentChipCount;
 
         public Game(int chipCount, int handLimit, string opponentName)
         {
             _chipCount = chipCount;
+            _opponentChipCount = chipCount;
             _handLimit = handLimit;
-            Log.Information($"New game started against: {opponentName}");
+            _opponentName = opponentName;
+            Log.Information($"New game started. ChipCount: {chipCount}, HandLimit: {handLimit}, OpponentName: {opponentName}");
         }
 
         public void ReceiveButton()
         {
             _opponentMove = null;
-            Log.Information("Received button");
+            Log.Information("Opponent posted blind (1)");
         }
 
         public void PostBlind()
@@ -61,28 +48,25 @@ namespace Bot
 
         public string Move()
         {
-            var ratio = _ratio[_card];
+            var ratio = BettingLimits.Ratio[_card];
+
             if (ratio == 0.0)
             {
-                Log.Information("Folding");
+                if (_opponentMove == null)
+                {
+                    Log.Information("Crap card, Our go first, Bet minimum (1) to try and force them to fold");
+                    return "BET";
+                }
+
+                Log.Information("Crap card, Opponent has bet, Folding");
                 return "FOLD";
             }
 
-            //if (_opponentMove.Contains("BET:"))
-            //{
-            //    var opponenent
-            //}
+            var maxWillingToBet = (int)(ratio * _chipCount);
 
-            var bet = (int)(ratio * _chipCount);
-            if (bet > _handLimit)
-            {
-                bet = _handLimit;
-            }
-
-            _chipCount -= bet;
-
-            Log.Information($"Betting: {bet}");
-            return $"BET:{bet}";
+            _chipCount -= maxWillingToBet;
+            Log.Information($"Betting: {maxWillingToBet}");
+            return $"BET:{maxWillingToBet}";
         }
 
         public void ReceiveChips(string chips)
@@ -95,5 +79,25 @@ namespace Bot
         {
             Log.Information($"Opponent card: {card}");
         }
+    }
+
+    public static class BettingLimits
+    {
+        public static readonly Dictionary<string, double> Ratio = new Dictionary<string, double>
+        {
+            {"2", 0.0},
+            {"3", 0.0},
+            {"4", 0.0},
+            {"5", 0.0},
+            {"6", 0.0},
+            {"7", 0.05},
+            {"8", 0.07},
+            {"9", 0.08},
+            {"T", 0.1},
+            {"J", 0.3},
+            {"Q", 0.5},
+            {"K", 0.7},
+            {"A", 1.0}
+        };
     }
 }
