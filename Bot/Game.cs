@@ -24,6 +24,11 @@ namespace Bot
             {"A", 1.0}
     };
 
+        public void ReceiveButton()
+        {
+            throw new System.NotImplementedException();
+        }
+
         public Game(int chipCount, int handLimit)
         {
             _chipCount = chipCount;
@@ -47,6 +52,22 @@ namespace Bot
         public void SetCard(string updateData)
         {
             _card = updateData;
+        }
+
+        public void PostBlind()
+        {
+        }
+
+        public void OpponentMove(string updateData)
+        {
+        }
+
+        public void ReceiveChips(string updateData)
+        {
+        }
+
+        public void OpponentCard(string updateData)
+        {
         }
     }
 }

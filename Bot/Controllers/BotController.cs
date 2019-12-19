@@ -42,6 +42,32 @@ namespace Bot.Controllers
             {
                 CurrentGame.SetCard(update.DATA);
             }
+
+            if (update.COMMAND == "RECEIVE_BUTTON")
+            {
+                CurrentGame.ReceiveButton();
+            }
+
+            if (update.COMMAND == "POST_BLIND")
+            {
+                CurrentGame.PostBlind();
+            }
+            
+            if (update.COMMAND == "OPPONENT_MOVE")
+            {
+                CurrentGame.OpponentMove(update.DATA);
+            }
+            
+            if (update.COMMAND == "RECEIVE_CHIPS")
+            {
+                CurrentGame.ReceiveChips(update.DATA);
+            }
+            
+            if (update.COMMAND == "OPPONENT_CARD")
+            {
+                CurrentGame.OpponentCard(update.DATA);
+            }
+
             return Ok(update);
         }
     }
