@@ -38,6 +38,10 @@ namespace Bot.Controllers
         [Consumes("application/x-www-form-urlencoded")]
         public async Task<IActionResult> Update([FromForm] UpdateGame update)
         {
+            if (update.COMMAND == "CARD")
+            {
+                CurrentGame.SetCard(update.DATA);
+            }
             return Ok(update);
         }
     }
