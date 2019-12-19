@@ -24,17 +24,29 @@ namespace Bot
             {"A", 1.0}
     };
 
-        public void ReceiveButton()
-        {
-            throw new System.NotImplementedException();
-        }
-
         public Game(int chipCount, int handLimit)
         {
             _chipCount = chipCount;
             _handLimit = handLimit;
         }
 
+        public void ReceiveButton()
+        {
+        }
+
+        public void PostBlind()
+        {
+            _chipCount -= 1;
+        }
+
+        public void SetCard(string card)
+        {
+            _card = card;
+        }
+
+        public void OpponentMove(string move)
+        {
+        }
 
         public string Move()
         {
@@ -45,28 +57,22 @@ namespace Bot
             }
 
             var bet = (int)(ratio * _chipCount);
+            if (bet > _handLimit)
+            {
+                bet = _handLimit;
+            }
+
             _chipCount -= bet;
+
             return $"BET:{bet}";
         }
 
-        public void SetCard(string updateData)
+        public void ReceiveChips(string chips)
         {
-            _card = updateData;
+            _chipCount += int.Parse(chips);
         }
 
-        public void PostBlind()
-        {
-        }
-
-        public void OpponentMove(string updateData)
-        {
-        }
-
-        public void ReceiveChips(string updateData)
-        {
-        }
-
-        public void OpponentCard(string updateData)
+        public void OpponentCard(string card)
         {
         }
     }
