@@ -12,6 +12,7 @@ namespace Bot
         private string _card;
         private string _opponentMove;
         private int _opponentChipCount;
+        private int _totalBetThisHand;
 
         public Game(int chipCount, int remainingHands, string opponentName)
         {
@@ -32,6 +33,7 @@ namespace Bot
         public void PostBlind()
         {
             _chipCount -= 1;
+            _totalBetThisHand += 1;
             _opponentMove = null;
             Log.Information("Posted blind (1)");
         }
@@ -57,16 +59,24 @@ namespace Bot
             {
                 if (_opponentMove == null)
                 {
-                    Log.Information("Crap card, Our go first, Bet minimum (1) to try and force them to fold");
+                    Log.Information($"Crap card {_card}, Our go first, Bet minimum (2) to try and force them to fold");
+                    Log.Information("BET");
+                    _totalBetThisHand += 2;
+                    _chipCount -= 2;
                     return "BET";
                 }
 
-                Log.Information("Crap card, Opponent has bet, Folding");
+                Log.Information($"Crap card {_card}, Opponent has bet, Folding");
                 return "FOLD";
             }
 
             var maxWillingToBet = (int)(ratio * _chipCount);
+            if (_totalBetThisHand >= maxWillingToBet)
+            {
+                return "FOLD";
+            }
 
+            _totalBetThisHand += maxWillingToBet;
             _chipCount -= maxWillingToBet;
             Log.Information($"Betting: {maxWillingToBet}");
             return $"BET:{maxWillingToBet}";
@@ -89,6 +99,8 @@ namespace Bot
             {
                 Log.Information($"**GAME WON** {_remainingHands}");
             }
+
+            _totalBetThisHand = 0;
         }
 
         public void OpponentCard(string card)
